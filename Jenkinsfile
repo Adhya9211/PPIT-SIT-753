@@ -7,6 +7,13 @@ pipeline {
                 // Build the code using a build automation tool like Maven
                 echo "Building the code using Maven"
             }
+            post{
+                always{
+                    mail to: "adhyamehrotra9211@gmail.com",
+                    subject: "Build Status Email",
+                    body: "Build was successfull!(Task 6.1C)"
+                }
+            }
         }
         stage('Unit and Integration Tests') {
             steps {
@@ -44,18 +51,13 @@ pipeline {
                 // Deploy the application to a production server (e.g., AWS EC2 instance)
                 echo "Deploying to production server"
             }
-             stage('Complete') {
+        }
+        stage('Complete') {
             steps {
-                // Deploy the application to a production server (e.g., AWS EC2 instance)
-                echo "Completing"
-            }
-                        post{
-                success{
-                    mail to: "adhyamehrotra9211@gmail.com",
-                    subject: "Build Status Email",
-                    body: "Build was successfull!(Task 6.1C)"
-                }
+                echo "Completed"
             }
         }
     }
-}
+ }
+
+
