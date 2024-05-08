@@ -7,13 +7,6 @@ pipeline {
                 // Build the code using a build automation tool like Maven
                 echo "Building the code using Maven"
             }
-            post{
-                always{
-                    mail to: "adhyamehrotra9211@gmail.com",
-                    subject: "Build Status Email",
-                    body: "Build was successfull!(Task 6.1C)"
-                }
-            }
         }
         stage('Unit and Integration Tests') {
             steps {
@@ -57,6 +50,13 @@ pipeline {
                 echo "Completed"
             }
         }
+         post{
+                success{
+                    mail to: "adhyamehrotra9211@gmail.com",
+                    subject: "Build Status Email",
+                    body: "Build was successfull!(Task 6.1C)"
+                }
+            }
     }
  }
 
