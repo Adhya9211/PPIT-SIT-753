@@ -49,15 +49,14 @@ pipeline {
             steps {
                 echo "Completed"
             }
-        }
-         post{
+            post{
                 success{
                     mail to: "adhyamehrotra9211@gmail.com",
                     subject: "Build Status Email",
                     body: "Build was successfull!(Task 6.1C)"
-                }
-            }
+               }
+           }
+       }
+         
     }
  }
-
-
