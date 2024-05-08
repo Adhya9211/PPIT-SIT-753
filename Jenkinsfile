@@ -1,51 +1,60 @@
 pipeline {
     agent any
     
-    environment {
-        DIRECTORY_PATH = "/path/to/code/directory"
-        TESTING_ENVIRONMENT = "TestingEnvironment"
-        PRODUCTION_ENVIRONMENT = "ProductionEnvironment"
-    }
-
     stages {
         stage('Build') {
             steps {
-                echo "Fetching the source code from ${env.DIRECTORY_PATH}" 
-                echo "Compiling the code and generating necessary artifacts"
-                
+                // Build the code using a build automation tool like Maven
+                echo "Building the code using Maven"
             }
         }
-        
-        stage('Test') {
+        stage('Unit and Integration Tests') {
             steps {
-                echo "Running unit tests"
-                echo "Running integration tests"
-
+                // Run unit tests using a test automation tool like JUnit
+                // Run integration tests using a test automation tool like Selenium or Cucumber
+                echo "Running unit tests and integration tests"
             }
         }
-        
-        stage('Code Quality Check') {
+        stage('Code Analysis') {
             steps {
-                echo "Checking the quality of the code"
+                // Integrate a code analysis tool like SonarQube or Checkstyle
+                echo "Running code analysis with SonarQube or Checkstyle"
             }
         }
-        
-        stage('Deploy') {
+        stage('Security Scan') {
             steps {
-                echo "Deploying the application to ${env.TESTING_ENVIRONMENT}"
+                // Perform a security scan on the code using a security scanning tool like OWASP ZAP
+                echo "Performing security scan with OWASP ZAP"
             }
         }
-        
-        stage('Approval') {
+        stage('Deploy to Staging') {
             steps {
-                echo "Waiting for manual approval..."
-                sleep time: 10, unit: 'SECONDS'
+                // Deploy the application to a staging server (e.g., AWS EC2 instance)
+                echo "Deploying to staging server"
             }
         }
-        
+        stage('Integration Tests on Staging') {
+            steps {
+                // Run integration tests on the staging environment
+                echo "Running integration tests on staging environment"
+            }
+        }
         stage('Deploy to Production') {
             steps {
-                echo "Deploying the application to ${env.PRODUCTION_ENVIRONMENT}"
+                // Deploy the application to a production server (e.g., AWS EC2 instance)
+                echo "Deploying to production server"
+            }
+             stage('Complete') {
+            steps {
+                // Deploy the application to a production server (e.g., AWS EC2 instance)
+                echo "Completing"
+            }
+                        post{
+                success{
+                    mail to: "adhyamehrotra9211@gmail.com",
+                    subject: "Build Status Email",
+                    body: "Build was successfull!(Task 6.1C)"
+                }
             }
         }
     }
