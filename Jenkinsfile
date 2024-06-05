@@ -14,6 +14,27 @@ pipeline {
                 // Run integration tests using a test automation tool like Selenium or Cucumber
                 echo "Running unit tests and integration tests"
             }
+              post {
+                always {
+                    archiveArtifacts artifacts: '**/test-*.log', allowEmptyArchive: true
+                }
+                success {
+                    emailext (
+                        to: 'adhyamehrotra9211@gmail.com',
+                        subject: 'Build Successful: Unit and Integration Tests',
+                        body: 'The build was successful. Please find the attached test logs.',
+                        attachLog: true
+                    )
+                }
+                failure {
+                    emailext (
+                        to: 'adhyamehrotra9211@gmail.com',
+                        subject: 'Build Failed: Unit and Integration Tests',
+                        body: 'The build failed. Please find the attached test logs.',
+                        attachLog: true
+                    )
+                }
+            }
         }
         stage('Code Analysis') {
             steps {
@@ -25,6 +46,27 @@ pipeline {
             steps {
                 // Perform a security scan on the code using a security scanning tool like OWASP ZAP
                 echo "Performing security scan with OWASP ZAP"
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: '**/security-scan-*.log', allowEmptyArchive: true
+                }
+                success {
+                    emailext (
+                        to: 'adhyamehrotra9211@gmail.com',
+                        subject: 'Build Successful: Security Scan',
+                        body: 'The build was successful. Please find the attached security scan logs.',
+                        attachLog: true
+                    )
+                }
+                failure {
+                    emailext (
+                        to: 'adhyamehrotra9211@gmail.com',
+                        subject: 'Build Failed: Security Scan',
+                        body: 'The build failed. Please find the attached security scan logs.',
+                        attachLog: true
+                    )
+                }
             }
         }
         stage('Deploy to Staging') {
