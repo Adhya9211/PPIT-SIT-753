@@ -16,22 +16,28 @@ pipeline {
             }
               post {
                 always {
-                    archiveArtifacts artifacts: '**/test-*.log', allowEmptyArchive: true
+                    sh"touch logs.txt..."
+                    echo "Attaching logs.txt..."
                 }
                 success {
                     emailext (
                         to: 'adhyamehrotra9211@gmail.com',
+                        from: 'ashu123@gmail.com'
                         subject: 'Build Successful: Unit and Integration Tests',
                         body: 'The build was successful. Please find the attached test logs.',
                         attachLog: true
+                        attachmentsPattern: "**/logs.txt"
                     )
                 }
                 failure {
                     emailext (
                         to: 'adhyamehrotra9211@gmail.com',
+                        from: 'ashu123@gmail.com'
                         subject: 'Build Failed: Unit and Integration Tests',
                         body: 'The build failed. Please find the attached test logs.',
-                        attachLog: true
+                        attachLog: true  
+                        attachmentsPattern: "**/logs.txt"
+                        
                     )
                 }
             }
@@ -80,6 +86,16 @@ pipeline {
                 // Run integration tests on the staging environment
                 echo "Running integration tests on staging environment"
             }
+            post {
+                always {
+                    sh "Attaching logs.txt"
+        }
+                success {
+                    mail to: "${EMAIL}",
+                    subject: "Integration Test Status",
+                    body: "Tests failed!"
+                }
+            }
         }
         stage('Deploy to Production') {
             steps {
@@ -98,7 +114,6 @@ pipeline {
                     body: "Build was successfull!(Task 6.1C)"
                }
            }
-       }
-         
+      }
     }
  }
