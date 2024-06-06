@@ -13,11 +13,12 @@ pipeline {
                 // Run unit tests using a test automation tool like JUnit
                 // Run integration tests using a test automation tool like Selenium or Cucumber
                 echo "Running unit tests and integration tests"
-                sh 'echo "Unit and Integration Tests logs" > logs.txt'
             }
             post {
                 always {
-                    archiveArtifacts artifacts: 'logs.txt', allowEmptyArchive: true
+                    script {
+                        writeFile file: 'logs.txt', text: 'Test logs'
+                    }
                     echo "Attaching logs.txt..."
                 }
                 success {
@@ -26,7 +27,8 @@ pipeline {
                         from: 'nobody@nowhere',
                         subject: 'Build Successful: Unit and Integration Tests',
                         body: 'The build was successful. Please find the attached test logs.',
-                        attachmentsPattern: 'logs.txt'
+                        attachLog: true,
+                        attachmentsPattern: '**/logs.txt'
                     )
                 }
                 failure {
@@ -35,7 +37,8 @@ pipeline {
                         from: 'nobody@nowhere',
                         subject: 'Build Failed: Unit and Integration Tests',
                         body: 'The build failed. Please find the attached test logs.',
-                        attachmentsPattern: 'logs.txt'
+                        attachLog: true,
+                        attachmentsPattern: '**/logs.txt'
                     )
                 }
             }
@@ -50,28 +53,25 @@ pipeline {
             steps {
                 // Perform a security scan on the code using a security scanning tool like OWASP ZAP
                 echo "Performing security scan with OWASP ZAP"
-                sh 'echo "Security Scan logs" > security-scan.log'
             }
             post {
                 always {
-                    archiveArtifacts artifacts: 'security-scan.log', allowEmptyArchive: true
+                    archiveArtifacts artifacts: '**/security-scan-*.log', allowEmptyArchive: true
                 }
                 success {
                     emailext (
                         to: 'adhyamehrotra9211@gmail.com',
-                        from: 'nobody@nowhere',
                         subject: 'Build Successful: Security Scan',
                         body: 'The build was successful. Please find the attached security scan logs.',
-                        attachmentsPattern: 'security-scan.log'
+                        attachLog: true
                     )
                 }
                 failure {
                     emailext (
                         to: 'adhyamehrotra9211@gmail.com',
-                        from: 'nobody@nowhere',
                         subject: 'Build Failed: Security Scan',
                         body: 'The build failed. Please find the attached security scan logs.',
-                        attachmentsPattern: 'security-scan.log'
+                        attachLog: true
                     )
                 }
             }
@@ -86,28 +86,26 @@ pipeline {
             steps {
                 // Run integration tests on the staging environment
                 echo "Running integration tests on staging environment"
-                sh 'echo "Integration Tests on Staging logs" > staging-tests.log'
             }
             post {
                 always {
-                    archiveArtifacts artifacts: 'staging-tests.log', allowEmptyArchive: true
+                    script {
+                        writeFile file: 'logs.txt', text: 'Integration test logs on staging'
+                    }
+                    echo "Attaching logs.txt"
                 }
                 success {
                     emailext (
                         to: 'adhyamehrotra9211@gmail.com',
-                        from: 'nobody@nowhere',
-                        subject: 'Integration Test Status',
-                        body: 'Integration tests on staging environment were successful.',
-                        attachmentsPattern: 'staging-tests.log'
+                        subject: "Integration Test Status",
+                        body: "Tests passed!"
                     )
                 }
                 failure {
                     emailext (
                         to: 'adhyamehrotra9211@gmail.com',
-                        from: 'nobody@nowhere',
-                        subject: 'Integration Test Status',
-                        body: 'Integration tests on staging environment failed. Please find the attached logs.',
-                        attachmentsPattern: 'staging-tests.log'
+                        subject: "Integration Test Status",
+                        body: "Tests failed!"
                     )
                 }
             }
@@ -122,16 +120,15 @@ pipeline {
             steps {
                 echo "Completed"
             }
-            post {
-                success {
+            post{
+                success{
                     emailext (
-                        to: 'adhyamehrotra9211@gmail.com',
-                        from: 'nobody@nowhere',
-                        subject: 'Build Status Email',
-                        body: 'Build was successful! (Task 6.1C)'
+                        to: "adhyamehrotra9211@gmail.com",
+                        subject: "Build Status Email",
+                        body: "Build was successful! (Task 6.1C)"
                     )
-                }
-            }
-        }
+               }
+           }
+      }
     }
 }
